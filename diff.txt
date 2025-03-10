@@ -1,0 +1,86 @@
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+index 2526dd6..5490f8d 100644
+--- a/.idea/compiler.xml
++++ b/.idea/compiler.xml
+@@ -7,12 +7,14 @@
+         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+         <outputRelativeToContentRoot value="true" />
+         <module name="config-server" />
++        <module name="discovery-server" />
+       </profile>
+     </annotationProcessing>
+   </component>
+   <component name="JavacSettings">
+     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+       <module name="config-server" options="-parameters" />
++      <module name="discovery-server" options="-parameters" />
+     </option>
+   </component>
+ </project>
+\ No newline at end of file
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+index 1d3a907..ac00e38 100644
+--- a/.idea/encodings.xml
++++ b/.idea/encodings.xml
+@@ -2,5 +2,6 @@
+ <project version="4">
+   <component name="Encoding">
+     <file url="file://$PROJECT_DIR$/services/config-server/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/services/discovery-server/src/main/java" charset="UTF-8" />
+   </component>
+ </project>
+\ No newline at end of file
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+index 804af9e..f75e420 100644
+--- a/.idea/misc.xml
++++ b/.idea/misc.xml
+@@ -1,5 +1,15 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/services/config-server/pom.xml" />
++        <option value="$PROJECT_DIR$/services/discovery-server/pom.xml" />
++      </list>
++    </option>
++    <option name="workspaceImportForciblyTurnedOn" value="true" />
++  </component>
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="temurin-21" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+diff --git a/services/config-server/src/main/java/labs/codemountain/configserver/ConfigServerApplication.java b/services/config-server/src/main/java/labs/codemountain/configserver/ConfigServerApplication.java
+index fa958bb..a2efa8e 100644
+--- a/services/config-server/src/main/java/labs/codemountain/configserver/ConfigServerApplication.java
++++ b/services/config-server/src/main/java/labs/codemountain/configserver/ConfigServerApplication.java
+@@ -2,8 +2,10 @@ package labs.codemountain.configserver;
+ 
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
++import org.springframework.cloud.config.server.EnableConfigServer;
+ 
+ @SpringBootApplication
++@EnableConfigServer
+ public class ConfigServerApplication {
+ 
+ 	public static void main(String[] args) {
+diff --git a/services/config-server/src/main/resources/application.yaml b/services/config-server/src/main/resources/application.yaml
+index d2c7449..1332069 100644
+--- a/services/config-server/src/main/resources/application.yaml
++++ b/services/config-server/src/main/resources/application.yaml
+@@ -1 +1,13 @@
+-spring.application.name=config-server
++spring:
++  profiles:
++    active: native
++  application:
++    name: config-server
++  cloud:
++    config:
++      server:
++        native:
++          search-locations: classpath:/configurations
++server:
++  port: 8888
++
