@@ -1,13 +1,13 @@
-package labs.codemountain.product;
+package labs.codemountain.ecommerce;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProductApplication {
+public class ProductServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProductApplication.class, args);
+		SpringApplication.run(ProductServiceApplication.class, args);
 	}
 
 }

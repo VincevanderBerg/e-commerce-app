@@ -1,10 +1,10 @@
-package labs.codemountain.product;
+package labs.codemountain.ecommerce.product;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProductApplicationTests {
+class ProductServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
