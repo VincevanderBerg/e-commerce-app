@@ -4,7 +4,9 @@ import labs.codemountain.ecommerce.category.Category;
 import labs.codemountain.ecommerce.product.dto.ProductPurchaseResponse;
 import labs.codemountain.ecommerce.product.dto.ProductRequest;
 import labs.codemountain.ecommerce.product.dto.ProductResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
 
     public final Product toEntity(ProductRequest request) {
@@ -33,6 +35,12 @@ public class ProductMapper {
     }
 
     public ProductPurchaseResponse toPurchaseResponse(Product product) {
-        return ProductPurchaseResponse.builder().build();
+        return ProductPurchaseResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .quantity(product.getQuantity())
+                .price(product.getPrice())
+                .build();
     }
 }

@@ -1,14 +1,16 @@
 package labs.codemountain.ecommerce.product;
 
-import jakarta.persistence.EntityNotFoundException;
 import labs.codemountain.ecommerce.product.dto.ProductPurchaseRequest;
 import labs.codemountain.ecommerce.product.dto.ProductPurchaseResponse;
 import labs.codemountain.ecommerce.product.dto.ProductRequest;
 import labs.codemountain.ecommerce.product.dto.ProductResponse;
-import labs.codemountain.ecommerce.product.exception.ProductPurchaseException;
+import labs.codemountain.ecommerce.product.exceptions.ProductNotFoundException;
+import labs.codemountain.ecommerce.product.exceptions.ProductPurchaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,18 +41,36 @@ public class ProductService {
             throw new ProductPurchaseException("One or more products does not exist");
         }
 
-        // TODO: Check if quantities match available quantities before returning purchases.
+        List<ProductPurchaseRequest> sortedRequest = request
+                .stream()
+                .sorted(Comparator.comparing(ProductPurchaseRequest::productId))
+                .toList();
 
-        return productList.stream()
-                .map(mapper::toPurchaseResponse)
-                .collect(Collectors.toList());
+        List<ProductPurchaseResponse> purchaseList = new ArrayList<>();
+
+        for (int i = 0; i < productList.size(); i++) {
+            final Product product = productList.get(i);
+            final ProductPurchaseRequest purchaseRequest = sortedRequest.get(i);
+
+            if (product.getQuantity() < purchaseRequest.quantity()) {
+                throw new ProductPurchaseException("Insufficient stock quantity for product with id=[%s]".formatted(product.getId()));
+            }
+
+            final int updatedProductQuantity = product.getQuantity() - purchaseRequest.quantity();
+            product.setQuantity(updatedProductQuantity);
+            repository.save(product);
+
+            purchaseList.add(mapper.toPurchaseResponse(product));
+        }
+
+        return purchaseList;
     }
 
     public ProductResponse findProductById(Long productId) {
         return repository.findById(productId)
                 .map(mapper::toResponse)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Could not find product with id=[%s]".formatted(productId)
+                        () -> new ProductNotFoundException("Could not find product with id=[%s]".formatted(productId)
                         ));
     }
 
