@@ -5,6 +5,8 @@ import labs.codemountain.ecommerce.orderLine.dto.OrderLineResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderLineService {
@@ -16,5 +18,12 @@ public class OrderLineService {
         final OrderLine result = repository.save(mapper.toEntity(request));
 
         return mapper.toResponse(result);
+    }
+
+    public List<OrderLineResponse> findAllByOrderId(Long orderId) {
+        return repository.findAllByOrderId(orderId)
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
     }
 }

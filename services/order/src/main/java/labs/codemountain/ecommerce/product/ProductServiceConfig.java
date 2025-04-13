@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 public class ProductServiceConfig {
 
     @Bean
-    public final RestTemplate restTemplate() {
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }
