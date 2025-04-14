@@ -9,6 +9,8 @@ import labs.codemountain.ecommerce.order.dto.OrderRequest;
 import labs.codemountain.ecommerce.order.dto.OrderResponse;
 import labs.codemountain.ecommerce.orderLine.OrderLineService;
 import labs.codemountain.ecommerce.orderLine.dto.OrderLineRequest;
+import labs.codemountain.ecommerce.payment.PaymentClient;
+import labs.codemountain.ecommerce.payment.PaymentRequest;
 import labs.codemountain.ecommerce.product.ProductClient;
 import labs.codemountain.ecommerce.product.PurchaseRequest;
 import labs.codemountain.ecommerce.product.PurchaseResponse;
@@ -28,6 +30,7 @@ public class OrderService {
     private final ProductClient productClient;
     private final OrderMapper orderMapper;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public OrderResponse createOrder(OrderRequest request) {
         // check if customer exists
@@ -52,6 +55,15 @@ public class OrderService {
         }
 
         // initiate payment process
+        final PaymentRequest paymentRequest = PaymentRequest.builder()
+                .amount(request.orderAmount())
+                .paymentMethod(request.paymentMethod())
+                .orderId(order.getId())
+                .orderReference(order.getReference())
+                .customer(customer)
+                .build();
+
+        paymentClient.requestOrderPayment(paymentRequest);
 
         // send order confirmation --> notification microservice (kafka)
         orderProducer.sendOrderConfirmation(
