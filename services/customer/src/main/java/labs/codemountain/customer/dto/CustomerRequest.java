@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import labs.codemountain.customer.Address;
 
 public record CustomerRequest(
-        String id,
-
         @NotNull(message = "Customer first name is required.")
         String firstName,
 
