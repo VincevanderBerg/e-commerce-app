@@ -10,11 +10,11 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
-      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: labs.codemountain.ecommerce.kafka
-        spring.json.type.mapping: orderConfirmation:labs.codemountain.ecommerce.kafka.OrderConfirmation, paymentConfirmation:labs.codemountain.ecommerce.notification.PaymentNotificationRequest
+        spring.json.type.mapping: orderConfirmation:labs.codemountain.ecommerce.kafka.order.OrderConfirmation, paymentConfirmation:labs.codemountain.ecommerce.kafka.payment.PaymentConfirmation
       group-id: paymentGroup, orderGroup
   mail:
     host: localhost

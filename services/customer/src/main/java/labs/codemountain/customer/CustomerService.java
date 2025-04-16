@@ -33,10 +33,6 @@ public class CustomerService {
 
     public final CustomerResponse createCustomer(CustomerRequest request) {
 
-        if (repository.existsById(request.id())) {
-            throw new BadCustomerRequestException("Could not create customer:: Customer with id " + request.id() + " already exists");
-        }
-
         if (repository.existsByEmail(request.email())) {
             throw new BadCustomerRequestException("Could not create customer:: Customer with email " + request.email() + " already exists");
         }
@@ -44,10 +40,10 @@ public class CustomerService {
         return mapper.toCustomerResponse(repository.save(mapper.toCustomer(request)));
     }
 
-    public final CustomerResponse updateCustomer(CustomerRequest request) {
+    public final CustomerResponse updateCustomer(String id, CustomerRequest request) {
 
-        Customer customer = repository.findById(request.id()).orElseThrow(
-                () -> new CustomerNotFoundException("Could not update customer:: Customer with id " + request.id() + " does not exist")
+        Customer customer = repository.findById(id).orElseThrow(
+                () -> new CustomerNotFoundException("Could not update customer:: Customer with id " + id + " does not exist")
         );
 
         boolean changes = false;
